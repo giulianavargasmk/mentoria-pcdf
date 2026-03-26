@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Mentoria Elite PCDF</title>
+
+<style>
+body {
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+    padding:20px;
+}
+
+h1, h2 { text-align:center; }
+
+.dashboard {
+    background:#1e293b;
+    padding:15px;
+    border-radius:12px;
+    margin-bottom:20px;
+}
+
+.day {
+    background:#1e293b;
+    margin:10px 0;
+    padding:15px;
+    border-radius:10px;
+}
+
+button {
+    margin-top:8px;
+    padding:6px 12px;
+    border:none;
+    border-radius:6px;
+    background:#22c55e;
+    color:white;
+}
+
+input {
+    padding:5px;
+    margin-top:5px;
+}
+
+.done {
+    opacity:0.6;
+}
+
+.bad { color:#ef4444; }
+.good { color:#22c55e; }
+</style>
+</head>
+
+<body>
+
+<h1>🚔 Mentoria Elite PCDF</h1>
+<h2>Planejamento + Inteligência de Aprovação</h2>
+
+<div class="dashboard">
+Progresso: <span id="progress">0</span>%<br>
+Desempenho geral: <span id="performance">0</span>%<br><br>
+
+📚 Português: <span id="port">0</span>%<br>
+⚖️ Penal: <span id="penal">0</span>%<br>
+📑 Processo Penal: <span id="proc">0</span>%<br>
+
+<br>
+🧠 Diagnóstico: <span id="diagnostic">-</span>
+</div>
+
+<div id="planner"></div>
+
+<script>
+
+let totalDays = 90;
+let data = JSON.parse(localStorage.getItem("pcdf_data")) || {
+    completed: 0,
+    scores: [],
+    subjects: {
+        "Português": [],
+        "Penal": [],
+        "Processo": []
+    }
+};
+
+function save() {
+    localStorage.setItem("pcdf_data", JSON.stringify(data));
+}
+
+function avg(arr){
+    if(arr.length==0) return 0;
+    return Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+}
+
+function update(){
+    document.getElementById("progress").innerText = Math.round((data.completed/totalDays)*100);
+
+    let geral = avg(data.scores);
+    document.getElementById("performance").innerText = geral;
+
+    let p = avg(data.subjects["Português"]);
+    let pe = avg(data.subjects["Penal"]);
+    let pr = avg(data.subjects["Processo"]);
+
+    document.getElementById("port").innerText = p;
+    document.getElementById("penal").innerText = pe;
+    document.getElementById("proc").innerText = pr;
+
+    let weakest = Math.min(p, pe, pr);
+
+    if(weakest == p){
+        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Português (interpretação)";
+    } else if(weakest == pe){
+        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Penal (teoria do crime)";
+    } else {
+        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Processo Penal (inquérito/provas)";
+    }
+
+    save();
+}
+
+function completeDay(id, scoreInput, subject){
+    let val = parseInt(scoreInput.value);
+
+    if(!val || val<0 || val>100){
+        alert("Digite % válida");
+        return;
+    }
+
+    let el = document.getElementById(id);
+
+    if(!el.classList.contains("done")){
+        el.classList.add("done");
+        data.completed++;
+        data.scores.push(val);
+        data.subjects[subject].push(val);
+    }
+
+    update();
+}
+
+let plano = [
+["Português","Interpretação (inferência + reescrita)"],
+["Penal","Art. 1–12 (lei penal no tempo e espaço)"],
+["Processo","Art. 4–23 (inquérito policial)"],
+["Português","Coesão e coerência"],
+["Penal","Art. 13–18 (teoria do crime)"],
+["Processo","Art. 155–184 (provas)"]
+];
+
+let planner = document.getElementById("planner");
+
+for(let i=1;i<=90;i++){
+    let tema = plano[i % plano.length];
+
+    let div = document.createElement("div");
+    div.className = "day";
+    div.id = "d"+i;
+
+    div.innerHTML = `
+        <h3>📅 Dia ${i}</h3>
+        <p><b>${tema[0]}</b> → ${tema[1]}</p>
+
+        <p>⏱️ Teoria: 1h30</p>
+        <p>⚖️ Lei seca: 30min (artigos do tema)</p>
+        <p>🧠 Questões: 60 (30 fácil + 30 difícil)</p>
+        <p>🔁 Revisão: D-1 / D-7 / D-30</p>
+
+        % acertos:<br>
+        <input type="number" id="s${i}" min="0" max="100">
+        <br>
+        <button onclick="completeDay('d${i}', s${i}, '${tema[0]}')">Concluir</button>
+    `;
+
+    planner.appendChild(div);
+}
+
+update();
+
+</script>
+
+</body>
+</html>
