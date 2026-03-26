@@ -2,89 +2,87 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Mentoria Elite PCDF</title>
+<title>Mentoria Elite PCDF PRO</title>
 
 <style>
 body {
     font-family: Arial;
     background:#0f172a;
     color:white;
-    padding:20px;
+    padding:15px;
 }
 
-h1, h2 { text-align:center; }
+h1 {text-align:center;}
 
 .dashboard {
     background:#1e293b;
     padding:15px;
-    border-radius:12px;
+    border-radius:10px;
     margin-bottom:20px;
+}
+
+.grid {
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:10px;
 }
 
 .day {
     background:#1e293b;
-    margin:10px 0;
-    padding:15px;
+    padding:12px;
     border-radius:10px;
 }
 
+.study {color:#f97316;}
+.review {color:#38bdf8;}
+.done {opacity:0.5;}
+
 button {
-    margin-top:8px;
-    padding:6px 12px;
-    border:none;
-    border-radius:6px;
+    margin-top:5px;
+    padding:5px 10px;
     background:#22c55e;
+    border:none;
+    border-radius:5px;
     color:white;
 }
 
-input {
-    padding:5px;
-    margin-top:5px;
-}
-
-.done {
-    opacity:0.6;
-}
-
-.bad { color:#ef4444; }
-.good { color:#22c55e; }
+input {width:60px;}
 </style>
 </head>
 
 <body>
 
-<h1>🚔 Mentoria Elite PCDF</h1>
-<h2>Planejamento + Inteligência de Aprovação</h2>
+<h1>🚔 Mentoria Elite PCDF PRO</h1>
 
 <div class="dashboard">
 Progresso: <span id="progress">0</span>%<br>
 Desempenho geral: <span id="performance">0</span>%<br><br>
 
-📚 Português: <span id="port">0</span>%<br>
-⚖️ Penal: <span id="penal">0</span>%<br>
-📑 Processo Penal: <span id="proc">0</span>%<br>
-
-<br>
+Português: <span id="port">0</span>% |
+Penal: <span id="penal">0</span>% |
+Processo: <span id="proc">0</span>% |
+Outras: <span id="outros">0</span>%
+<br><br>
 🧠 Diagnóstico: <span id="diagnostic">-</span>
 </div>
 
-<div id="planner"></div>
+<div class="grid" id="planner"></div>
 
 <script>
 
-let totalDays = 90;
-let data = JSON.parse(localStorage.getItem("pcdf_data")) || {
-    completed: 0,
-    scores: [],
-    subjects: {
-        "Português": [],
-        "Penal": [],
-        "Processo": []
+let data = JSON.parse(localStorage.getItem("pcdf")) || {
+    completed:0,
+    scores:[],
+    subjects:{
+        "Português":[],
+        "Penal":[],
+        "Processo":[],
+        "Outros":[]
     }
 };
 
-function save() {
-    localStorage.setItem("pcdf_data", JSON.stringify(data));
+function save(){
+    localStorage.setItem("pcdf", JSON.stringify(data));
 }
 
 function avg(arr){
@@ -93,7 +91,7 @@ function avg(arr){
 }
 
 function update(){
-    document.getElementById("progress").innerText = Math.round((data.completed/totalDays)*100);
+    document.getElementById("progress").innerText = Math.round((data.completed/90)*100);
 
     let geral = avg(data.scores);
     document.getElementById("performance").innerText = geral;
@@ -101,26 +99,24 @@ function update(){
     let p = avg(data.subjects["Português"]);
     let pe = avg(data.subjects["Penal"]);
     let pr = avg(data.subjects["Processo"]);
+    let o = avg(data.subjects["Outros"]);
 
     document.getElementById("port").innerText = p;
     document.getElementById("penal").innerText = pe;
     document.getElementById("proc").innerText = pr;
+    document.getElementById("outros").innerText = o;
 
     let weakest = Math.min(p, pe, pr);
 
-    if(weakest == p){
-        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Português (interpretação)";
-    } else if(weakest == pe){
-        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Penal (teoria do crime)";
-    } else {
-        document.getElementById("diagnostic").innerHTML = "⚠️ Focar em Processo Penal (inquérito/provas)";
-    }
+    if(weakest==p) diagnostic.innerText="Reforçar Português";
+    else if(weakest==pe) diagnostic.innerText="Reforçar Penal";
+    else diagnostic.innerText="Reforçar Processo Penal";
 
     save();
 }
 
-function completeDay(id, scoreInput, subject){
-    let val = parseInt(scoreInput.value);
+function concluir(id, input, subject){
+    let val = parseInt(input.value);
 
     if(!val || val<0 || val>100){
         alert("Digite % válida");
@@ -133,43 +129,51 @@ function completeDay(id, scoreInput, subject){
         el.classList.add("done");
         data.completed++;
         data.scores.push(val);
-        data.subjects[subject].push(val);
+
+        if(subject in data.subjects){
+            data.subjects[subject].push(val);
+        } else {
+            data.subjects["Outros"].push(val);
+        }
     }
 
     update();
 }
 
 let plano = [
-["Português","Interpretação (inferência + reescrita)"],
-["Penal","Art. 1–12 (lei penal no tempo e espaço)"],
-["Processo","Art. 4–23 (inquérito policial)"],
-["Português","Coesão e coerência"],
-["Penal","Art. 13–18 (teoria do crime)"],
-["Processo","Art. 155–184 (provas)"]
+["Penal","Português","Lei seca"],
+["Processo","Informática","Revisão"],
+["Constitucional","RLM","Lei seca"],
+["Administrativo","Português","Revisão"],
+["Penal","Processo","Lei seca"],
+["Estatística","Contabilidade","Revisão"],
+["Simulado","Revisão geral","Análise"]
 ];
 
 let planner = document.getElementById("planner");
 
 for(let i=1;i<=90;i++){
-    let tema = plano[i % plano.length];
+    let dia = plano[i%plano.length];
 
     let div = document.createElement("div");
-    div.className = "day";
-    div.id = "d"+i;
+    div.className="day";
+    div.id="d"+i;
 
     div.innerHTML = `
-        <h3>📅 Dia ${i}</h3>
-        <p><b>${tema[0]}</b> → ${tema[1]}</p>
+    <h3>📅 Dia ${i}</h3>
 
-        <p>⏱️ Teoria: 1h30</p>
-        <p>⚖️ Lei seca: 30min (artigos do tema)</p>
-        <p>🧠 Questões: 60 (30 fácil + 30 difícil)</p>
-        <p>🔁 Revisão: D-1 / D-7 / D-30</p>
+    <div class="study">📚 ${dia[0]}</div>
+    <div class="study">📚 ${dia[1]}</div>
+    <div class="review">🔁 ${dia[2]}</div>
 
-        % acertos:<br>
-        <input type="number" id="s${i}" min="0" max="100">
-        <br>
-        <button onclick="completeDay('d${i}', s${i}, '${tema[0]}')">Concluir</button>
+    ⏱️ 4h total<br>
+    🎯 60 questões<br>
+    ⚖️ Lei seca diária<br>
+
+    % acertos:<br>
+    <input type="number" id="s${i}">
+    <br>
+    <button onclick="concluir('d${i}', s${i}, '${dia[0]}')">Concluir</button>
     `;
 
     planner.appendChild(div);
