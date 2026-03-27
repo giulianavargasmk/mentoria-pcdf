@@ -2,184 +2,238 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>Mentoria Elite PCDF PRO</title>
+<title>Mentoria PCDF Elite</title>
 
 <style>
-body {
+body{
     font-family: Arial;
     background:#0f172a;
-    color:white;
-    padding:15px;
+    color:#e2e8f0;
+    padding:20px;
 }
 
-h1 {text-align:center;}
+h1{
+    text-align:center;
+    color:#f9a8d4;
+}
 
-.dashboard {
-    background:#1e293b;
-    padding:15px;
-    border-radius:10px;
+.container{
+    max-width:900px;
+    margin:auto;
+}
+
+.topbar{
+    display:flex;
+    justify-content:space-between;
     margin-bottom:20px;
 }
 
-.grid {
-    display:grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap:10px;
-}
-
-.day {
-    background:#1e293b;
-    padding:12px;
-    border-radius:10px;
-}
-
-.study {color:#f97316;}
-.review {color:#38bdf8;}
-.done {opacity:0.5;}
-
-button {
-    margin-top:5px;
-    padding:5px 10px;
-    background:#22c55e;
-    border:none;
-    border-radius:5px;
+button{
+    background:#1e3a8a;
     color:white;
+    border:none;
+    padding:8px 12px;
+    border-radius:8px;
 }
 
-input {width:60px;}
+.card{
+    background:#1e293b;
+    border-radius:12px;
+    padding:15px;
+    margin-bottom:10px;
+}
+
+.day{
+    border-left:4px solid #f9a8d4;
+}
+
+.study{color:#93c5fd;}
+.review{color:#f9a8d4;}
+
+.done{
+    opacity:0.5;
+}
+
+input{
+    margin-top:5px;
+}
 </style>
+
 </head>
 
 <body>
 
-<h1>🚔 Mentoria Elite PCDF PRO</h1>
+<div class="container">
 
-<div class="dashboard">
-Progresso: <span id="progress">0</span>%<br>
-Desempenho geral: <span id="performance">0</span>%<br><br>
+<h1>Mentoria Elite PCDF</h1>
 
-Português: <span id="port">0</span>% |
-Penal: <span id="penal">0</span>% |
-Processo: <span id="proc">0</span>% |
-Outras: <span id="outros">0</span>%
-<br><br>
-🧠 Diagnóstico: <span id="diagnostic">-</span>
+<div class="topbar">
+<button onclick="prevWeek()">⬅️ Semana</button>
+<div id="weekTitle">Semana 1</div>
+<button onclick="nextWeek()">Semana ➡️</button>
 </div>
 
-<div class="grid" id="planner"></div>
+<div id="planner"></div>
+
+</div>
 
 <script>
 
-let data = JSON.parse(localStorage.getItem("pcdf")) || {
-    completed:0,
-    scores:[],
-    subjects:{
-        "Português":[],
-        "Penal":[],
-        "Processo":[],
-        "Outros":[]
-    }
-};
+let currentWeek = 0;
 
-function save(){
-    localStorage.setItem("pcdf", JSON.stringify(data));
+let weeks = [
+
+/* ================= SEMANA 1 ================= */
+
+[
+{
+dia:"Dia 1",
+conteudo:[
+"📚 Penal → Aplicação da lei penal (art. 1–12)",
+"📚 Português → Interpretação (inferência)",
+"⚖️ Lei seca → CP art. 1–12",
+"🧠 Questões → 30 penal + 30 português",
+"🔁 Revisão → iniciar ciclo"
+]
+},
+
+{
+dia:"Dia 2",
+conteudo:[
+"📚 Processo Penal → Inquérito (art. 4–23)",
+"📚 Informática → Segurança básica",
+"⚖️ Lei seca → CPP art. 4–10",
+"🧠 Questões → 60 questões",
+"🔁 Revisão → Dia 1"
+]
+},
+
+{
+dia:"Dia 3",
+conteudo:[
+"📚 Penal → Tipicidade (art. 13–18)",
+"📚 Português → Coesão e coerência",
+"⚖️ Lei seca → CP art. 13–18",
+"🧠 Questões → 30 penal + 30 português",
+"🔁 Revisão → Dia 2"
+]
+},
+
+{
+dia:"Dia 4",
+conteudo:[
+"📚 Constitucional → Direitos fundamentais",
+"📚 RLM → proposições",
+"⚖️ Lei seca → CF art. 5",
+"🧠 Questões → 60",
+"🔁 Revisão → Dia 3"
+]
+},
+
+{
+dia:"Dia 5",
+conteudo:[
+"📚 Penal → Ilicitude",
+"📚 Processo Penal → Provas",
+"⚖️ Lei seca → CPP art. 155–157",
+"🧠 Questões → 60",
+"🔁 Revisão → Dia 4"
+]
+},
+
+{
+dia:"Dia 6",
+conteudo:[
+"📚 Estatística → média",
+"📚 Contabilidade → patrimônio",
+"⚖️ Lei seca → revisão geral",
+"🧠 Questões → 40",
+"🔁 Revisão → semana"
+]
+},
+
+{
+dia:"Dia 7",
+conteudo:[
+"🧠 Simulado 80 questões",
+"🔁 Revisão completa",
+"📊 Análise de desempenho"
+]
+}
+],
+
+/* ================= SEMANA 2 ================= */
+
+[
+{
+dia:"Dia 8",
+conteudo:[
+"📚 Penal → Culpabilidade",
+"📚 Português → Concordância",
+"⚖️ Lei seca → CP art. 20–23",
+"🧠 Questões → 60",
+"🔁 Revisão → Dia 1"
+]
+},
+
+{
+dia:"Dia 9",
+conteudo:[
+"📚 Processo Penal → Prisões",
+"📚 Informática → redes",
+"⚖️ Lei seca → CPP art. 282–310",
+"🧠 Questões → 60",
+"🔁 Revisão → Dia 2"
+]
 }
 
-function avg(arr){
-    if(arr.length==0) return 0;
-    return Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
-}
+]
 
-function update(){
-    document.getElementById("progress").innerText = Math.round((data.completed/90)*100);
-
-    let geral = avg(data.scores);
-    document.getElementById("performance").innerText = geral;
-
-    let p = avg(data.subjects["Português"]);
-    let pe = avg(data.subjects["Penal"]);
-    let pr = avg(data.subjects["Processo"]);
-    let o = avg(data.subjects["Outros"]);
-
-    document.getElementById("port").innerText = p;
-    document.getElementById("penal").innerText = pe;
-    document.getElementById("proc").innerText = pr;
-    document.getElementById("outros").innerText = o;
-
-    let weakest = Math.min(p, pe, pr);
-
-    if(weakest==p) diagnostic.innerText="Reforçar Português";
-    else if(weakest==pe) diagnostic.innerText="Reforçar Penal";
-    else diagnostic.innerText="Reforçar Processo Penal";
-
-    save();
-}
-
-function concluir(id, input, subject){
-    let val = parseInt(input.value);
-
-    if(!val || val<0 || val>100){
-        alert("Digite % válida");
-        return;
-    }
-
-    let el = document.getElementById(id);
-
-    if(!el.classList.contains("done")){
-        el.classList.add("done");
-        data.completed++;
-        data.scores.push(val);
-
-        if(subject in data.subjects){
-            data.subjects[subject].push(val);
-        } else {
-            data.subjects["Outros"].push(val);
-        }
-    }
-
-    update();
-}
-
-let plano = [
-["Penal","Português","Lei seca"],
-["Processo","Informática","Revisão"],
-["Constitucional","RLM","Lei seca"],
-["Administrativo","Português","Revisão"],
-["Penal","Processo","Lei seca"],
-["Estatística","Contabilidade","Revisão"],
-["Simulado","Revisão geral","Análise"]
 ];
 
-let planner = document.getElementById("planner");
+function render(){
+    let planner = document.getElementById("planner");
+    planner.innerHTML="";
+    
+    document.getElementById("weekTitle").innerText = "Semana "+(currentWeek+1);
 
-for(let i=1;i<=90;i++){
-    let dia = plano[i%plano.length];
+    weeks[currentWeek].forEach((d,i)=>{
+        let div = document.createElement("div");
+        div.className="card day";
 
-    let div = document.createElement("div");
-    div.className="day";
-    div.id="d"+i;
+        let html = `<h3>${d.dia}</h3>`;
 
-    div.innerHTML = `
-    <h3>📅 Dia ${i}</h3>
+        d.conteudo.forEach(c=>{
+            html += `<div>${c}</div>`;
+        });
 
-    <div class="study">📚 ${dia[0]}</div>
-    <div class="study">📚 ${dia[1]}</div>
-    <div class="review">🔁 ${dia[2]}</div>
+        html += `
+        % acertos:<br>
+        <input type="number">
+        <br>
+        <button onclick="this.parentElement.classList.add('done')">Concluir</button>
+        `;
 
-    ⏱️ 4h total<br>
-    🎯 60 questões<br>
-    ⚖️ Lei seca diária<br>
-
-    % acertos:<br>
-    <input type="number" id="s${i}">
-    <br>
-    <button onclick="concluir('d${i}', s${i}, '${dia[0]}')">Concluir</button>
-    `;
-
-    planner.appendChild(div);
+        div.innerHTML = html;
+        planner.appendChild(div);
+    });
 }
 
-update();
+function nextWeek(){
+    if(currentWeek < weeks.length-1){
+        currentWeek++;
+        render();
+    }
+}
+
+function prevWeek(){
+    if(currentWeek > 0){
+        currentWeek--;
+        render();
+    }
+}
+
+render();
 
 </script>
 
