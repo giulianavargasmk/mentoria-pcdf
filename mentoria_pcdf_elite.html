@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PCDF Elite</title>
+<title>PCDF Elite 90 Dias</title>
 
 <style>
 body{
@@ -26,9 +26,8 @@ body{
 }
 
 .menu button{
-    display:block;
     width:100%;
-    margin:10px 0;
+    margin:8px 0;
     padding:10px;
     border:none;
     border-radius:8px;
@@ -43,47 +42,30 @@ body{
 }
 
 /* SECTIONS */
-.section{
-    display:none;
-}
+.section{display:none;}
+.active{display:block;}
 
-.active{
-    display:block;
-}
-
-/* CARDS */
+/* CARD */
 .card{
     background:#1e293b;
     padding:15px;
     border-radius:12px;
-    margin-bottom:10px;
+    margin-bottom:12px;
 }
 
-/* GRID HORIZONTAL */
+/* GRID */
 .week-grid{
     display:grid;
-    grid-template-columns: repeat(7, 1fr);
+    grid-template-columns: repeat(7, minmax(200px,1fr));
     gap:12px;
-}
-
-.day{
-    min-width:180px;
-}
-
-/* BUTTON */
-button{
-    cursor:pointer;
 }
 
 /* COLORS */
 .study{color:#93c5fd;}
 .review{color:#f9a8d4;}
 
-.done{
-    opacity:0.5;
-}
+.done{opacity:0.5;}
 
-/* TITLE */
 .title{
     text-align:center;
     font-size:22px;
@@ -112,81 +94,21 @@ button{
 <div id="daily" class="section active">
 <div class="title">📅 Meta de Hoje</div>
 
-<div class="card">
-📚 Penal → Tipicidade (art. 13–18)<br>
-📚 Português → Interpretação<br>
-⚖️ Lei seca → CP art. 13–18<br>
-🧠 60 questões<br>
-🔁 Revisar: ontem (24h)
-</div>
+<div id="today" class="card"></div>
 
 <input type="number" id="scoreDay">
 <button onclick="finishDay()">Concluir dia</button>
 </div>
 
-<!-- META SEMANAL -->
+<!-- SEMANA -->
 <div id="weekly" class="section">
-<div class="title">📅 Semana 1</div>
+<div class="title">📅 Semana Atual</div>
 
-<div class="week-grid">
-
-<div class="card day">
-<b>Seg</b><br>
-📚 Penal<br>
-📚 Português<br>
-⚖️ Lei seca<br>
-🧠 60 questões
-</div>
-
-<div class="card day">
-<b>Ter</b><br>
-📚 Processo<br>
-📚 Informática<br>
-⚖️ Lei seca
-</div>
-
-<div class="card day">
-<b>Qua</b><br>
-📚 Penal<br>
-📚 Português
-</div>
-
-<div class="card day">
-<b>Qui</b><br>
-📚 Constitucional<br>
-📚 RLM
-</div>
-
-<div class="card day">
-<b>Sex</b><br>
-📚 Penal<br>
-📚 Processo
-</div>
-
-<div class="card day">
-<b>Sáb</b><br>
-📚 Estatística<br>
-📚 Contabilidade
-</div>
-
-<div class="card day">
-<b>Dom</b><br>
-🧠 Simulado
-</div>
-
-</div>
+<div id="weekGrid" class="week-grid"></div>
 
 <div class="card">
-⚖️ Lei seca da semana:<br>
-CP art. 1–18<br>
-CPP art. 4–23<br>
-
-🔁 Revisões:<br>
-24h → ontem<br>
-7 dias → semana passada<br>
-30 dias → revisão geral
+⚖️ Lei seca da semana + revisões automáticas aplicadas
 </div>
-
 </div>
 
 <!-- DESEMPENHO -->
@@ -194,14 +116,13 @@ CPP art. 4–23<br>
 <div class="title">📊 Desempenho</div>
 
 <div class="card">
-Total de dias: <span id="days">0</span><br>
+Dias concluídos: <span id="days">0</span><br>
 Média: <span id="avg">0</span>%
 </div>
 
 <div class="card">
 <div style="background:#1e3a8a;height:20px;width:0%" id="bar"></div>
 </div>
-
 </div>
 
 <!-- QUESTÕES -->
@@ -209,17 +130,11 @@ Média: <span id="avg">0</span>%
 <div class="title">🧠 Questões</div>
 
 <div class="card">
-Assunto: Penal<br>
-Feitas: <input type="number" id="q1"><br>
-Acertos: <input type="number" id="a1"><br>
-Erros: <input type="number" id="e1"><br>
+Penal: feitas <input> acertos <input> erros <input>
 </div>
 
 <div class="card">
-Assunto: Português<br>
-Feitas: <input type="number"><br>
-Acertos: <input type="number"><br>
-Erros: <input type="number"><br>
+Português: feitas <input> acertos <input> erros <input>
 </div>
 
 </div>
@@ -228,8 +143,34 @@ Erros: <input type="number"><br>
 
 <script>
 
+let plan = [];
+let subjects = [
+"Penal → teoria do crime",
+"Português → interpretação",
+"Processo → inquérito",
+"Constitucional → art.5",
+"RLM → lógica",
+"Informática",
+"Estatística",
+"Contabilidade"
+];
+
+/* GERAR 90 DIAS */
+for(let i=0;i<90;i++){
+    let s1 = subjects[i%subjects.length];
+    let s2 = subjects[(i+1)%subjects.length];
+
+    plan.push({
+        teoria:[s1,s2],
+        lei:"Lei seca correspondente",
+        questoes:"60 questões",
+        revisao:`Revisar D-${i-1}, D-${i-7}, D-${i-30}`
+    });
+}
+
+/* DATA */
 let data = JSON.parse(localStorage.getItem("pcdf")) || {
-days:0,
+day:0,
 scores:[]
 };
 
@@ -237,36 +178,78 @@ function save(){
 localStorage.setItem("pcdf", JSON.stringify(data));
 }
 
+/* MOSTRAR DIA */
+function renderDay(){
+let d = plan[data.day];
+
+document.getElementById("today").innerHTML = `
+<div class="study">📚 ${d.teoria[0]}</div>
+<div class="study">📚 ${d.teoria[1]}</div>
+<div class="review">⚖️ ${d.lei}</div>
+<div>🧠 ${d.questoes}</div>
+<div>🔁 ${d.revisao}</div>
+`;
+}
+
+/* SEMANA */
+function renderWeek(){
+let grid = document.getElementById("weekGrid");
+grid.innerHTML="";
+
+let start = Math.floor(data.day/7)*7;
+
+for(let i=0;i<7;i++){
+let d = plan[start+i];
+
+let div = document.createElement("div");
+div.className="card";
+
+div.innerHTML = `
+<b>Dia ${start+i+1}</b><br>
+📚 ${d.teoria[0]}<br>
+📚 ${d.teoria[1]}<br>
+⚖️ Lei seca<br>
+🧠 60 questões
+`;
+
+grid.appendChild(div);
+}
+}
+
+/* FINALIZAR DIA */
+function finishDay(){
+let val = parseInt(document.getElementById("scoreDay").value);
+if(!val){alert("Digite %");return;}
+
+data.scores.push(val);
+data.day++;
+
+update();
+save();
+renderDay();
+renderWeek();
+}
+
+/* DESEMPENHO */
+function update(){
+let avg = 0;
+if(data.scores.length){
+avg = data.scores.reduce((a,b)=>a+b)/data.scores.length;
+}
+
+document.getElementById("days").innerText = data.day;
+document.getElementById("avg").innerText = Math.round(avg);
+document.getElementById("bar").style.width = avg+"%";
+}
+
+/* MENU */
 function show(id){
 document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
 document.getElementById(id).classList.add("active");
 }
 
-function finishDay(){
-let val = parseInt(document.getElementById("scoreDay").value);
-
-if(!val){ alert("Digite %"); return; }
-
-data.days++;
-data.scores.push(val);
-
-update();
-save();
-}
-
-function update(){
-let avg = 0;
-
-if(data.scores.length){
-avg = data.scores.reduce((a,b)=>a+b)/data.scores.length;
-}
-
-document.getElementById("days").innerText = data.days;
-document.getElementById("avg").innerText = Math.round(avg);
-
-document.getElementById("bar").style.width = avg+"%";
-}
-
+renderDay();
+renderWeek();
 update();
 
 </script>
