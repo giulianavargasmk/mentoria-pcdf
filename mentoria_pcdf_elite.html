@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PCDF Elite</title>
+<title>PCDF Elite Planner</title>
 
 <style>
 body{
@@ -31,7 +31,13 @@ body{
     padding:20px;
 }
 
-/* GRID SEMANAL */
+/* HEADER */
+.header{
+    font-size:22px;
+    margin-bottom:10px;
+}
+
+/* GRID */
 .week-grid{
     display:grid;
     grid-template-columns: repeat(7, 1fr);
@@ -45,6 +51,14 @@ body{
     border-radius:10px;
     border-top:3px solid #f9a8d4;
     font-size:12px;
+}
+
+/* BLOCO LEI + REVISÃO */
+.extra{
+    margin-top:20px;
+    background:#1e293b;
+    padding:15px;
+    border-radius:10px;
 }
 
 .study{color:#93c5fd;}
@@ -63,7 +77,6 @@ button{
     color:white;
     font-size:12px;
 }
-
 </style>
 
 </head>
@@ -71,93 +84,100 @@ button{
 <body>
 
 <div class="sidebar">
-    <h2>PCDF Elite</h2>
+<h2>PCDF Elite</h2>
 </div>
 
 <div class="main">
 
-<h2>Semana 1</h2>
+<div class="header">📅 Semana 1</div>
 
 <div class="week-grid">
 
-<!-- DIA 1 -->
+<!-- SEG -->
 <div class="card" id="d1">
 <b>Seg</b><br>
-<div class="study">Penal → art. 1–12</div>
-<div class="study">Português → interpretação</div>
-<div class="review">Lei seca CP</div>
-🧠 60 questões<br>
+
+<div class="study">📚 Penal → art. 1–12</div>
+<div class="study">📚 Português → interpretação</div>
+<div class="review">⚖️ Lei seca</div>
+<div>🧠 60 questões</div>
 
 <input type="number" id="s1"><br>
 <button onclick="done('d1', s1)">✔️</button>
 </div>
 
-<!-- DIA 2 -->
+<!-- TER -->
 <div class="card" id="d2">
 <b>Ter</b><br>
-<div class="study">Processo → inquérito</div>
-<div class="study">Informática</div>
-<div class="review">Lei seca CPP</div>
-🧠 60 questões<br>
+
+<div class="study">📚 Processo → inquérito</div>
+<div class="study">📚 Informática</div>
+<div class="review">⚖️ Lei seca</div>
+<div>🧠 60 questões</div>
 
 <input type="number" id="s2"><br>
 <button onclick="done('d2', s2)">✔️</button>
 </div>
 
-<!-- DIA 3 -->
+<!-- QUA -->
 <div class="card" id="d3">
 <b>Qua</b><br>
-<div class="study">Penal → tipicidade</div>
-<div class="study">Português → coesão</div>
-<div class="review">Lei seca</div>
-🧠 60 questões<br>
+
+<div class="study">📚 Penal → tipicidade</div>
+<div class="study">📚 Português → coesão</div>
+<div class="review">⚖️ Lei seca</div>
+<div>🧠 60 questões</div>
 
 <input type="number" id="s3"><br>
 <button onclick="done('d3', s3)">✔️</button>
 </div>
 
-<!-- DIA 4 -->
+<!-- QUI -->
 <div class="card" id="d4">
 <b>Qui</b><br>
-<div class="study">Constitucional → art. 5</div>
-<div class="study">RLM</div>
-<div class="review">Lei seca</div>
-🧠 60 questões<br>
+
+<div class="study">📚 Constitucional → art. 5</div>
+<div class="study">📚 RLM</div>
+<div class="review">⚖️ Lei seca</div>
+<div>🧠 60 questões</div>
 
 <input type="number" id="s4"><br>
 <button onclick="done('d4', s4)">✔️</button>
 </div>
 
-<!-- DIA 5 -->
+<!-- SEX -->
 <div class="card" id="d5">
 <b>Sex</b><br>
-<div class="study">Penal → ilicitude</div>
-<div class="study">Processo → provas</div>
-<div class="review">Lei seca</div>
-🧠 60 questões<br>
+
+<div class="study">📚 Penal → ilicitude</div>
+<div class="study">📚 Processo → provas</div>
+<div class="review">⚖️ Lei seca</div>
+<div>🧠 60 questões</div>
 
 <input type="number" id="s5"><br>
 <button onclick="done('d5', s5)">✔️</button>
 </div>
 
-<!-- DIA 6 -->
+<!-- SAB -->
 <div class="card" id="d6">
 <b>Sáb</b><br>
-<div class="study">Estatística</div>
-<div class="study">Contabilidade</div>
-<div class="review">Revisão</div>
-🧠 40 questões<br>
+
+<div class="study">📚 Estatística</div>
+<div class="study">📚 Contabilidade</div>
+<div class="review">🔁 Revisão</div>
+<div>🧠 40 questões</div>
 
 <input type="number" id="s6"><br>
 <button onclick="done('d6', s6)">✔️</button>
 </div>
 
-<!-- DIA 7 -->
+<!-- DOM -->
 <div class="card" id="d7">
 <b>Dom</b><br>
-🧠 Simulado<br>
-🔁 Revisão geral<br>
-📊 Análise<br>
+
+<div>🧠 Simulado</div>
+<div class="review">🔁 Revisão geral</div>
+<div>📊 Análise</div>
 
 <input type="number" id="s7"><br>
 <button onclick="done('d7', s7)">✔️</button>
@@ -165,17 +185,30 @@ button{
 
 </div>
 
+<!-- BLOCO EXTRA -->
+<div class="extra">
+
+<h3>⚖️ Lei Seca da Semana</h3>
+- CP art. 1–18  
+- CPP art. 4–23  
+- CF art. 5  
+
+<h3>🔁 Revisões Programadas</h3>
+
+<b>24h:</b> revisar conteúdo do dia anterior<br>
+<b>7 dias:</b> revisar conteúdos da semana passada<br>
+<b>30 dias:</b> revisão geral acumulada<br>
+
+</div>
+
 </div>
 
 <script>
-
 function done(id, input){
-    let val = parseInt(input.value);
-    if(!val){ alert("Digite %"); return; }
-
-    document.getElementById(id).classList.add("done");
+let val = parseInt(input.value);
+if(!val){ alert("Digite %"); return; }
+document.getElementById(id).classList.add("done");
 }
-
 </script>
 
 </body>
