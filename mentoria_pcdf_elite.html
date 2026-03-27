@@ -2,19 +2,19 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PCDF Elite Planner</title>
+<title>PCDF Elite</title>
 
 <style>
 body{
     margin:0;
-    font-family: Arial;
+    font-family:Arial;
     background:#0f172a;
     color:#e2e8f0;
 }
 
 /* SIDEBAR */
 .sidebar{
-    width:220px;
+    width:230px;
     height:100vh;
     background:#1e293b;
     position:fixed;
@@ -25,42 +25,57 @@ body{
     color:#f9a8d4;
 }
 
+.menu button{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+}
+
 /* MAIN */
 .main{
-    margin-left:240px;
+    margin-left:250px;
     padding:20px;
 }
 
-/* HEADER */
-.header{
-    font-size:22px;
+/* SECTIONS */
+.section{
+    display:none;
+}
+
+.active{
+    display:block;
+}
+
+/* CARDS */
+.card{
+    background:#1e293b;
+    padding:15px;
+    border-radius:12px;
     margin-bottom:10px;
 }
 
-/* GRID */
+/* GRID HORIZONTAL */
 .week-grid{
     display:grid;
     grid-template-columns: repeat(7, 1fr);
-    gap:10px;
+    gap:12px;
 }
 
-/* CARD */
-.card{
-    background:#1e293b;
-    padding:10px;
-    border-radius:10px;
-    border-top:3px solid #f9a8d4;
-    font-size:12px;
+.day{
+    min-width:180px;
 }
 
-/* BLOCO LEI + REVISÃO */
-.extra{
-    margin-top:20px;
-    background:#1e293b;
-    padding:15px;
-    border-radius:10px;
+/* BUTTON */
+button{
+    cursor:pointer;
 }
 
+/* COLORS */
 .study{color:#93c5fd;}
 .review{color:#f9a8d4;}
 
@@ -68,14 +83,11 @@ body{
     opacity:0.5;
 }
 
-button{
-    margin-top:5px;
-    padding:4px;
-    border:none;
-    border-radius:5px;
-    background:#1e3a8a;
-    color:white;
-    font-size:12px;
+/* TITLE */
+.title{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:20px;
 }
 </style>
 
@@ -85,130 +97,178 @@ button{
 
 <div class="sidebar">
 <h2>PCDF Elite</h2>
+
+<div class="menu">
+<button onclick="show('daily')">Meta diária</button>
+<button onclick="show('weekly')">Meta semanal</button>
+<button onclick="show('performance')">Desempenho</button>
+<button onclick="show('questions')">Questões</button>
+</div>
 </div>
 
 <div class="main">
 
-<div class="header">📅 Semana 1</div>
+<!-- META DIÁRIA -->
+<div id="daily" class="section active">
+<div class="title">📅 Meta de Hoje</div>
+
+<div class="card">
+📚 Penal → Tipicidade (art. 13–18)<br>
+📚 Português → Interpretação<br>
+⚖️ Lei seca → CP art. 13–18<br>
+🧠 60 questões<br>
+🔁 Revisar: ontem (24h)
+</div>
+
+<input type="number" id="scoreDay">
+<button onclick="finishDay()">Concluir dia</button>
+</div>
+
+<!-- META SEMANAL -->
+<div id="weekly" class="section">
+<div class="title">📅 Semana 1</div>
 
 <div class="week-grid">
 
-<!-- SEG -->
-<div class="card" id="d1">
+<div class="card day">
 <b>Seg</b><br>
-
-<div class="study">📚 Penal → art. 1–12</div>
-<div class="study">📚 Português → interpretação</div>
-<div class="review">⚖️ Lei seca</div>
-<div>🧠 60 questões</div>
-
-<input type="number" id="s1"><br>
-<button onclick="done('d1', s1)">✔️</button>
+📚 Penal<br>
+📚 Português<br>
+⚖️ Lei seca<br>
+🧠 60 questões
 </div>
 
-<!-- TER -->
-<div class="card" id="d2">
+<div class="card day">
 <b>Ter</b><br>
-
-<div class="study">📚 Processo → inquérito</div>
-<div class="study">📚 Informática</div>
-<div class="review">⚖️ Lei seca</div>
-<div>🧠 60 questões</div>
-
-<input type="number" id="s2"><br>
-<button onclick="done('d2', s2)">✔️</button>
+📚 Processo<br>
+📚 Informática<br>
+⚖️ Lei seca
 </div>
 
-<!-- QUA -->
-<div class="card" id="d3">
+<div class="card day">
 <b>Qua</b><br>
-
-<div class="study">📚 Penal → tipicidade</div>
-<div class="study">📚 Português → coesão</div>
-<div class="review">⚖️ Lei seca</div>
-<div>🧠 60 questões</div>
-
-<input type="number" id="s3"><br>
-<button onclick="done('d3', s3)">✔️</button>
+📚 Penal<br>
+📚 Português
 </div>
 
-<!-- QUI -->
-<div class="card" id="d4">
+<div class="card day">
 <b>Qui</b><br>
-
-<div class="study">📚 Constitucional → art. 5</div>
-<div class="study">📚 RLM</div>
-<div class="review">⚖️ Lei seca</div>
-<div>🧠 60 questões</div>
-
-<input type="number" id="s4"><br>
-<button onclick="done('d4', s4)">✔️</button>
+📚 Constitucional<br>
+📚 RLM
 </div>
 
-<!-- SEX -->
-<div class="card" id="d5">
+<div class="card day">
 <b>Sex</b><br>
-
-<div class="study">📚 Penal → ilicitude</div>
-<div class="study">📚 Processo → provas</div>
-<div class="review">⚖️ Lei seca</div>
-<div>🧠 60 questões</div>
-
-<input type="number" id="s5"><br>
-<button onclick="done('d5', s5)">✔️</button>
+📚 Penal<br>
+📚 Processo
 </div>
 
-<!-- SAB -->
-<div class="card" id="d6">
+<div class="card day">
 <b>Sáb</b><br>
-
-<div class="study">📚 Estatística</div>
-<div class="study">📚 Contabilidade</div>
-<div class="review">🔁 Revisão</div>
-<div>🧠 40 questões</div>
-
-<input type="number" id="s6"><br>
-<button onclick="done('d6', s6)">✔️</button>
+📚 Estatística<br>
+📚 Contabilidade
 </div>
 
-<!-- DOM -->
-<div class="card" id="d7">
+<div class="card day">
 <b>Dom</b><br>
-
-<div>🧠 Simulado</div>
-<div class="review">🔁 Revisão geral</div>
-<div>📊 Análise</div>
-
-<input type="number" id="s7"><br>
-<button onclick="done('d7', s7)">✔️</button>
+🧠 Simulado
 </div>
 
 </div>
 
-<!-- BLOCO EXTRA -->
-<div class="extra">
+<div class="card">
+⚖️ Lei seca da semana:<br>
+CP art. 1–18<br>
+CPP art. 4–23<br>
 
-<h3>⚖️ Lei Seca da Semana</h3>
-- CP art. 1–18  
-- CPP art. 4–23  
-- CF art. 5  
+🔁 Revisões:<br>
+24h → ontem<br>
+7 dias → semana passada<br>
+30 dias → revisão geral
+</div>
 
-<h3>🔁 Revisões Programadas</h3>
+</div>
 
-<b>24h:</b> revisar conteúdo do dia anterior<br>
-<b>7 dias:</b> revisar conteúdos da semana passada<br>
-<b>30 dias:</b> revisão geral acumulada<br>
+<!-- DESEMPENHO -->
+<div id="performance" class="section">
+<div class="title">📊 Desempenho</div>
+
+<div class="card">
+Total de dias: <span id="days">0</span><br>
+Média: <span id="avg">0</span>%
+</div>
+
+<div class="card">
+<div style="background:#1e3a8a;height:20px;width:0%" id="bar"></div>
+</div>
+
+</div>
+
+<!-- QUESTÕES -->
+<div id="questions" class="section">
+<div class="title">🧠 Questões</div>
+
+<div class="card">
+Assunto: Penal<br>
+Feitas: <input type="number" id="q1"><br>
+Acertos: <input type="number" id="a1"><br>
+Erros: <input type="number" id="e1"><br>
+</div>
+
+<div class="card">
+Assunto: Português<br>
+Feitas: <input type="number"><br>
+Acertos: <input type="number"><br>
+Erros: <input type="number"><br>
+</div>
 
 </div>
 
 </div>
 
 <script>
-function done(id, input){
-let val = parseInt(input.value);
-if(!val){ alert("Digite %"); return; }
-document.getElementById(id).classList.add("done");
+
+let data = JSON.parse(localStorage.getItem("pcdf")) || {
+days:0,
+scores:[]
+};
+
+function save(){
+localStorage.setItem("pcdf", JSON.stringify(data));
 }
+
+function show(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function finishDay(){
+let val = parseInt(document.getElementById("scoreDay").value);
+
+if(!val){ alert("Digite %"); return; }
+
+data.days++;
+data.scores.push(val);
+
+update();
+save();
+}
+
+function update(){
+let avg = 0;
+
+if(data.scores.length){
+avg = data.scores.reduce((a,b)=>a+b)/data.scores.length;
+}
+
+document.getElementById("days").innerText = data.days;
+document.getElementById("avg").innerText = Math.round(avg);
+
+document.getElementById("bar").style.width = avg+"%";
+}
+
+update();
+
 </script>
 
 </body>
