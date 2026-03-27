@@ -1,27 +1,250 @@
-function finishDay(){
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>PCDF Elite</title>
 
-let val = parseInt(document.getElementById("scoreDay").value);
-
-if(!val){
-alert("Digite %");
-return;
+<style>
+body{
+margin:0;
+font-family:Arial;
+background:#0b1220;
+color:#e5e7eb;
 }
 
-data.scores.push(val);
+/* SIDEBAR */
+.sidebar{
+width:240px;
+height:100vh;
+background:#111827;
+position:fixed;
+padding:20px;
+}
+
+.sidebar h2{
+color:#f472b6;
+margin-bottom:20px;
+}
+
+.menu div{
+padding:12px;
+margin-bottom:8px;
+border-radius:8px;
+cursor:pointer;
+}
+
+.menu div:hover{
+background:#1f2937;
+}
+
+/* MAIN */
+.main{
+margin-left:260px;
+padding:20px;
+}
+
+/* TITLE */
+.title{
+font-size:22px;
+margin-bottom:20px;
+}
+
+/* CARD */
+.card{
+background:#111827;
+padding:15px;
+border-radius:10px;
+margin-bottom:10px;
+border-left:4px solid #f472b6;
+}
+
+/* TEXT */
+.label{
+color:#93c5fd;
+font-weight:bold;
+}
+
+.sub{
+margin-bottom:6px;
+}
+
+.review{
+color:#f472b6;
+}
+
+/* GRID SEMANA */
+.week{
+display:grid;
+grid-template-columns:repeat(7,1fr);
+gap:10px;
+}
+
+/* PERFORMANCE */
+.bar{
+height:20px;
+background:#3b82f6;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>PCDF Elite</h2>
+
+<div class="menu">
+<div onclick="show('daily')">📅 Metas Diárias</div>
+<div onclick="show('weekly')">📊 Resumo da Semana</div>
+<div onclick="show('questions')">🎯 Questões</div>
+<div onclick="show('performance')">📈 Meu Desempenho</div>
+<div onclick="show('edital')">📚 Edital Verticalizado</div>
+</div>
+
+</div>
+
+<div class="main">
+
+<!-- META DIÁRIA -->
+<div id="daily" class="section active">
+
+<div class="title">Meta diária</div>
+
+<div id="dailyContent"></div>
+
+<input type="number" id="scoreDay">
+<button onclick="finishDay()">Concluir</button>
+
+</div>
+
+<!-- SEMANA -->
+<div id="weekly" class="section">
+
+<div class="title">Resumo da Semana</div>
+
+<div id="weekGrid" class="week"></div>
+
+</div>
+
+<!-- QUESTÕES -->
+<div id="questions" class="section">
+
+<div class="title">Questões</div>
+
+<div class="card">
+Matéria: Direito Penal<br>
+Feitas: <input><br>
+Acertos: <input><br>
+Erros: <input>
+</div>
+
+</div>
+
+<!-- DESEMPENHO -->
+<div id="performance" class="section">
+
+<div class="title">Meu Desempenho</div>
+
+<div class="card">
+Dias: <span id="days">0</span><br>
+Média: <span id="avg">0</span>%
+</div>
+
+<div class="card">
+<div class="bar" id="bar"></div>
+</div>
+
+</div>
+
+<!-- EDITAL -->
+<div id="edital" class="section">
+
+<div class="title">Edital Verticalizado</div>
+
+<div class="card">
+Direito Penal → Parte Geral<br>
+Direito Processual Penal → Inquérito<br>
+Constitucional → Direitos fundamentais<br>
+Português → Interpretação<br>
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let plan = [
+
+{
+mat1:["Direito Penal","Teoria do crime","CP art.13-18"],
+mat2:["Língua Portuguesa","Interpretação","-"],
+rev24:"Teoria do crime",
+rev7:"Inquérito policial",
+rev30:"Direitos fundamentais"
+}
+
+];
+
+let data = {day:0,scores:[]};
+
+function renderDay(){
+let d = plan[0];
+
+document.getElementById("dailyContent").innerHTML = `
+
+<div class="card review">🔁 Revisar: ${d.rev24}</div>
+
+<div class="card">
+<div class="label">Matéria: ${d.mat1[0]}</div>
+<div class="sub">Assunto: ${d.mat1[1]}</div>
+<div>⚖️ Lei seca: ${d.mat1[2]}</div>
+</div>
+
+<div class="card">
+<div class="label">Matéria: ${d.mat2[0]}</div>
+<div class="sub">Assunto: ${d.mat2[1]}</div>
+</div>
+
+<div class="card">🧠 60 questões</div>
+
+<div class="card review">🔁 Revisar: ${d.rev7} / ${d.rev30}</div>
+
+`;
+}
+
+function finishDay(){
+let val = document.getElementById("scoreDay").value;
+if(!val) return;
+
+data.scores.push(parseInt(val));
 data.day++;
 
-/* SISTEMA INTELIGENTE */
-if(val < 60){
-alert("⚠️ Atenção: desempenho baixo. Revisar conteúdo amanhã.");
-plan[data.day].disc1 = plan[data.day-1].disc1;
-}
-
-if(val >=60 && val <80){
-plan[data.day].disc2 = plan[data.day-1].disc2;
-}
-
 update();
-save();
-renderDay();
-renderWeek();
 }
+
+function update(){
+let avg = 0;
+
+if(data.scores.length){
+avg = data.scores.reduce((a,b)=>a+b)/data.scores.length;
+}
+
+document.getElementById("days").innerText = data.day;
+document.getElementById("avg").innerText = Math.round(avg);
+document.getElementById("bar").style.width = avg+"%";
+}
+
+function show(id){
+document.querySelectorAll(".section").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+renderDay();
+update();
+
+</script>
+
+</body>
+</html>
