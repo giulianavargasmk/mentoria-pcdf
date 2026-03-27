@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8">
-<title>PCDF Elite 90 Dias</title>
+<title>PCDF Elite</title>
 
 <style>
 body{
@@ -25,16 +25,6 @@ body{
     color:#f9a8d4;
 }
 
-.menu button{
-    width:100%;
-    margin:8px 0;
-    padding:10px;
-    border:none;
-    border-radius:8px;
-    background:#1e3a8a;
-    color:white;
-}
-
 /* MAIN */
 .main{
     margin-left:250px;
@@ -45,6 +35,13 @@ body{
 .section{display:none;}
 .active{display:block;}
 
+/* TITLE */
+.title{
+    text-align:center;
+    font-size:22px;
+    margin-bottom:20px;
+}
+
 /* CARD */
 .card{
     background:#1e293b;
@@ -53,24 +50,30 @@ body{
     margin-bottom:12px;
 }
 
-/* GRID */
+/* GRID SEMANA */
 .week-grid{
     display:grid;
-    grid-template-columns: repeat(7, minmax(200px,1fr));
-    gap:12px;
+    grid-template-columns: repeat(7, 1fr);
+    gap:15px;
 }
 
-/* COLORS */
-.study{color:#93c5fd;}
+/* CARD SEMANA */
+.day{
+    min-height:180px;
+}
+
+/* TEXTO */
+.disciplina{
+    font-weight:bold;
+    color:#93c5fd;
+}
+
+.assunto{
+    font-size:13px;
+    margin-bottom:5px;
+}
+
 .review{color:#f9a8d4;}
-
-.done{opacity:0.5;}
-
-.title{
-    text-align:center;
-    font-size:22px;
-    margin-bottom:20px;
-}
 </style>
 
 </head>
@@ -80,35 +83,33 @@ body{
 <div class="sidebar">
 <h2>PCDF Elite</h2>
 
-<div class="menu">
 <button onclick="show('daily')">Meta diária</button>
 <button onclick="show('weekly')">Meta semanal</button>
 <button onclick="show('performance')">Desempenho</button>
 <button onclick="show('questions')">Questões</button>
-</div>
 </div>
 
 <div class="main">
 
 <!-- META DIÁRIA -->
 <div id="daily" class="section active">
-<div class="title">📅 Meta de Hoje</div>
 
-<div id="today" class="card"></div>
+<div class="title">📅 Meta diária</div>
+
+<div id="dailyContent"></div>
 
 <input type="number" id="scoreDay">
 <button onclick="finishDay()">Concluir dia</button>
+
 </div>
 
-<!-- SEMANA -->
+<!-- META SEMANAL -->
 <div id="weekly" class="section">
+
 <div class="title">📅 Semana Atual</div>
 
 <div id="weekGrid" class="week-grid"></div>
 
-<div class="card">
-⚖️ Lei seca da semana + revisões automáticas aplicadas
-</div>
 </div>
 
 <!-- DESEMPENHO -->
@@ -116,13 +117,14 @@ body{
 <div class="title">📊 Desempenho</div>
 
 <div class="card">
-Dias concluídos: <span id="days">0</span><br>
+Dias: <span id="days">0</span><br>
 Média: <span id="avg">0</span>%
 </div>
 
 <div class="card">
 <div style="background:#1e3a8a;height:20px;width:0%" id="bar"></div>
 </div>
+
 </div>
 
 <!-- QUESTÕES -->
@@ -133,39 +135,37 @@ Média: <span id="avg">0</span>%
 Penal: feitas <input> acertos <input> erros <input>
 </div>
 
-<div class="card">
-Português: feitas <input> acertos <input> erros <input>
-</div>
-
 </div>
 
 </div>
 
 <script>
 
+/* PLANO */
 let plan = [];
 let subjects = [
-"Penal → teoria do crime",
-"Português → interpretação",
-"Processo → inquérito",
-"Constitucional → art.5",
-"RLM → lógica",
-"Informática",
-"Estatística",
-"Contabilidade"
+["Penal","Teoria do crime (art.13-18)"],
+["Português","Interpretação"],
+["Processo","Inquérito"],
+["Constitucional","Art.5"],
+["RLM","Lógica"],
+["Informática","Segurança"],
+["Estatística","Média"],
+["Contabilidade","Patrimônio"]
 ];
 
-/* GERAR 90 DIAS */
 for(let i=0;i<90;i++){
-    let s1 = subjects[i%subjects.length];
-    let s2 = subjects[(i+1)%subjects.length];
+let s1 = subjects[i%subjects.length];
+let s2 = subjects[(i+1)%subjects.length];
 
-    plan.push({
-        teoria:[s1,s2],
-        lei:"Lei seca correspondente",
-        questoes:"60 questões",
-        revisao:`Revisar D-${i-1}, D-${i-7}, D-${i-30}`
-    });
+plan.push({
+rev24:`Revisar: ${subjects[(i-1+subjects.length)%subjects.length][0]}`,
+disc1:s1,
+disc2:s2,
+questoes:"60 questões (30+30)",
+revLong:`Revisar 7d/30d`,
+lei:"Lei seca correspondente"
+});
 }
 
 /* DATA */
@@ -178,16 +178,30 @@ function save(){
 localStorage.setItem("pcdf", JSON.stringify(data));
 }
 
-/* MOSTRAR DIA */
+/* RENDER META DIÁRIA */
 function renderDay(){
 let d = plan[data.day];
 
-document.getElementById("today").innerHTML = `
-<div class="study">📚 ${d.teoria[0]}</div>
-<div class="study">📚 ${d.teoria[1]}</div>
-<div class="review">⚖️ ${d.lei}</div>
-<div>🧠 ${d.questoes}</div>
-<div>🔁 ${d.revisao}</div>
+document.getElementById("dailyContent").innerHTML = `
+
+<div class="card review">🔁 ${d.rev24}</div>
+
+<div class="card">
+<div class="disciplina">📚 ${d.disc1[0]} (1h30)</div>
+<div class="assunto">${d.disc1[1]}</div>
+</div>
+
+<div class="card">
+<div class="disciplina">📚 ${d.disc2[0]} (1h30)</div>
+<div class="assunto">${d.disc2[1]}</div>
+</div>
+
+<div class="card">🧠 ${d.questoes}</div>
+
+<div class="card review">🔁 ${d.revLong}</div>
+
+<div class="card">⚖️ ${d.lei}</div>
+
 `;
 }
 
@@ -202,21 +216,25 @@ for(let i=0;i<7;i++){
 let d = plan[start+i];
 
 let div = document.createElement("div");
-div.className="card";
+div.className="card day";
 
 div.innerHTML = `
-<b>Dia ${start+i+1}</b><br>
-📚 ${d.teoria[0]}<br>
-📚 ${d.teoria[1]}<br>
-⚖️ Lei seca<br>
-🧠 60 questões
-`;
+<b>Dia ${start+i+1}</b><br><br>
 
+<div class="disciplina">${d.disc1[0]}</div>
+<div class="assunto">${d.disc1[1]}</div>
+
+<br>
+
+<div class="disciplina">${d.disc2[0]}</div>
+<div class="assunto">${d.disc2[1]}</div>
+
+`;
 grid.appendChild(div);
 }
 }
 
-/* FINALIZAR DIA */
+/* FINALIZAR */
 function finishDay(){
 let val = parseInt(document.getElementById("scoreDay").value);
 if(!val){alert("Digite %");return;}
@@ -233,6 +251,7 @@ renderWeek();
 /* DESEMPENHO */
 function update(){
 let avg = 0;
+
 if(data.scores.length){
 avg = data.scores.reduce((a,b)=>a+b)/data.scores.length;
 }
