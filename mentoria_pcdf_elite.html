@@ -1,89 +1,286 @@
-<!-- CÓDIGO COMPLETO OTIMIZADO PCDF -->
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<title>Mentoria Elite PCDF</title>
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#0f172a;
+color:#e2e8f0;
+}
+
+/* SIDEBAR */
+.sidebar{
+width:260px;
+height:100vh;
+position:fixed;
+background:linear-gradient(180deg,#1e293b,#0f172a);
+padding:20px;
+}
+
+.sidebar h2{
+color:#f472b6;
+margin-bottom:30px;
+}
+
+/* MENU */
+.menu div{
+padding:12px;
+margin-bottom:10px;
+border-radius:10px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.menu div:hover{
+background:#1e293b;
+}
+
+/* MAIN */
+.main{
+margin-left:280px;
+padding:30px;
+}
+
+/* SECTIONS */
+.section{
+display:none;
+}
+
+.section.active{
+display:block;
+}
+
+/* TITLE */
+.title{
+font-size:24px;
+margin-bottom:20px;
+color:#93c5fd;
+}
+
+/* CARD */
+.card{
+background:#1e293b;
+padding:15px;
+border-radius:12px;
+margin-bottom:15px;
+border-left:5px solid #f472b6;
+}
+
+/* PLANNER */
+.week{
+display:grid;
+grid-template-columns: repeat(7,1fr);
+gap:10px;
+}
+
+.day{
+background:#1e293b;
+padding:10px;
+border-radius:10px;
+min-height:150px;
+}
+
+.day b{
+color:#f472b6;
+}
+
+/* INPUT */
+input{
+width:60px;
+}
+
+/* BUTTON */
+button{
+background:#f472b6;
+border:none;
+padding:5px;
+border-radius:5px;
+color:white;
+cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- MENU -->
+<div class="sidebar">
+
+<h2>🚔 PCDF Elite</h2>
+
+<div class="menu">
+<div onclick="show('daily')">📅 Metas Diárias</div>
+<div onclick="show('weekly')">📊 Resumo da Semana</div>
+<div onclick="show('questions')">🎯 Questões</div>
+<div onclick="show('performance')">📈 Meu Desempenho</div>
+<div onclick="show('edital')">📚 Edital Verticalizado</div>
+</div>
+
+</div>
+
+<!-- CONTEÚDO -->
+<div class="main">
+
+<!-- META DIÁRIA -->
+<div id="daily" class="section active">
+
+<div class="title">Meta diária</div>
+
+<div class="card">
+🔁 Revisão 24h: Teoria do crime (Direito Penal)
+</div>
+
+<div class="card">
+<b>Matéria: Direito Penal</b><br>
+Assunto: Teoria do crime<br>
+⚖️ Lei seca: CP art. 13–18<br>
+⏱️ Tempo: 1h30
+</div>
+
+<div class="card">
+<b>Matéria: Língua Portuguesa</b><br>
+Assunto: Interpretação de texto<br>
+⏱️ Tempo: 1h30
+</div>
+
+<div class="card">
+🧠 Questões: 60 (Cebraspe)
+</div>
+
+<div class="card">
+🔁 Revisão 7d/30d: Inquérito policial + Direitos fundamentais
+</div>
+
+</div>
+
+<!-- SEMANA -->
+<div id="weekly" class="section">
+
+<div class="title">Resumo da Semana</div>
+
+<div class="week">
+
+<div class="day">
+<b>Seg</b><br>
+Penal<br>
+Teoria do crime
+</div>
+
+<div class="day">
+<b>Ter</b><br>
+Processo Penal<br>
+Inquérito
+</div>
+
+<div class="day">
+<b>Qua</b><br>
+Português<br>
+Interpretação
+</div>
+
+<div class="day">
+<b>Qui</b><br>
+Constitucional<br>
+Direitos fundamentais
+</div>
+
+<div class="day">
+<b>Sex</b><br>
+RLM<br>
+Lógica proposicional
+</div>
+
+<div class="day">
+<b>Sáb</b><br>
+Informática<br>
+Redes
+</div>
+
+<div class="day">
+<b>Dom</b><br>
+Revisão geral
+</div>
+
+</div>
+
+</div>
+
+<!-- QUESTÕES -->
+<div id="questions" class="section">
+
+<div class="title">Questões</div>
+
+<div class="card">
+Direito Penal<br>
+Feitas: <input><br>
+Acertos: <input><br>
+Erros: <input>
+</div>
+
+</div>
+
+<!-- DESEMPENHO -->
+<div id="performance" class="section">
+
+<div class="title">Desempenho</div>
+
+<div class="card">
+📊 Sistema inteligente:<br>
+Mais foco automático em matérias com menor acerto.
+</div>
+
+</div>
+
+<!-- EDITAL -->
+<div id="edital" class="section">
+
+<div class="title">Edital Verticalizado (Cebraspe)</div>
+
+<div class="card">
+📚 <b>Direito Penal</b><br><br>
+Teoria do crime → 22% ⭐⭐⭐⭐⭐<br>
+Crimes Administração → 18% ⭐⭐⭐⭐⭐<br>
+Crimes patrimônio → 15% ⭐⭐⭐⭐<br>
+Lei penal → 12% ⭐⭐⭐⭐<br>
+Crimes pessoa → 10% ⭐⭐⭐<br>
+</div>
+
+<div class="card">
+📚 <b>Processo Penal</b><br><br>
+Inquérito → 30% ⭐⭐⭐⭐⭐<br>
+Prisão → 22% ⭐⭐⭐⭐⭐<br>
+Provas → 15% ⭐⭐⭐⭐<br>
+</div>
+
+<div class="card">
+📚 <b>Português</b><br><br>
+Interpretação → 35% ⭐⭐⭐⭐⭐<br>
+Coesão → 20% ⭐⭐⭐⭐⭐<br>
+Pontuação → 10% ⭐⭐⭐⭐<br>
+</div>
+
+</div>
+
+</div>
+
+<!-- SCRIPT -->
 <script>
 
-/* BASE COMPLETA */
-let trilha = [
-
-{
-mat1:["Direito Penal","Teoria do crime","CP art.13-18"],
-mat2:["Língua Portuguesa","Interpretação de texto","-"],
-lei:"CP art.13-18",
-rev:["Teoria do crime","Interpretação"]
-},
-
-{
-mat1:["Direito Processual Penal","Inquérito policial","CPP art.4-10"],
-mat2:["Língua Portuguesa","Coesão e coerência","-"],
-lei:"CPP art.4-10",
-rev:["Inquérito","Coesão"]
-},
-
-{
-mat1:["Direito Penal","Tipicidade","CP art.18"],
-mat2:["Língua Portuguesa","Pontuação","-"],
-lei:"CP art.18",
-rev:["Tipicidade"]
-},
-
-{
-mat1:["Direito Processual Penal","Provas","CPP art.155-157"],
-mat2:["Direito Constitucional","Direitos fundamentais","CF art.5"],
-lei:"CF art.5",
-rev:["Provas"]
-},
-
-{
-mat1:["Direito Penal","Ilicitude","CP art.23"],
-mat2:["RLM","Proposições","-"],
-lei:"CP art.23",
-rev:["Ilicitude"]
-}
-
-];
-
-/* EXPANSÃO PARA 90 DIAS */
-let plan = [];
-for(let i=0;i<90;i++){
-plan.push(trilha[i%trilha.length]);
-}
-
-/* RENDER */
-function renderDay(){
-
-let d = plan[data.day];
-
-document.getElementById("dailyContent").innerHTML = `
-
-<div class="card review">
-🔁 Revisar: ${d.rev.join(", ")}
-</div>
-
-<div class="card">
-<div class="label">Matéria: ${d.mat1[0]}</div>
-<div>Assunto: ${d.mat1[1]}</div>
-<div>⚖️ Lei seca: ${d.mat1[2]}</div>
-<div>⏱️ Tempo: 1h30</div>
-</div>
-
-<div class="card">
-<div class="label">Matéria: ${d.mat2[0]}</div>
-<div>Assunto: ${d.mat2[1]}</div>
-<div>⏱️ Tempo: 1h30</div>
-</div>
-
-<div class="card">
-🧠 Questões: 60 (30 fácil + 30 difícil)
-</div>
-
-<div class="card review">
-🔁 Revisão 7d / 30d: ${d.rev.join(", ")}
-</div>
-
-<div class="card">
-⚖️ Lei seca do dia: ${d.lei}
-</div>
-
-`;
+function show(sectionId){
+document.querySelectorAll('.section').forEach(sec=>{
+sec.classList.remove('active');
+});
+document.getElementById(sectionId).classList.add('active');
 }
 
 </script>
+
+</body>
+</html>
