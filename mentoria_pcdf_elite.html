@@ -6,20 +6,40 @@
 
 <style>
 body{
+    margin:0;
     font-family: Arial;
     background:#0f172a;
     color:#e2e8f0;
+}
+
+/* SIDEBAR */
+.sidebar{
+    width:220px;
+    height:100vh;
+    background:#1e293b;
+    position:fixed;
     padding:20px;
 }
 
-h1{
-    text-align:center;
+.sidebar h2{
     color:#f9a8d4;
 }
 
-.container{
-    max-width:900px;
-    margin:auto;
+.menu button{
+    display:block;
+    width:100%;
+    margin:10px 0;
+    padding:10px;
+    border:none;
+    border-radius:8px;
+    background:#1e3a8a;
+    color:white;
+}
+
+/* MAIN */
+.main{
+    margin-left:240px;
+    padding:20px;
 }
 
 .topbar{
@@ -28,22 +48,12 @@ h1{
     margin-bottom:20px;
 }
 
-button{
-    background:#1e3a8a;
-    color:white;
-    border:none;
-    padding:8px 12px;
-    border-radius:8px;
-}
-
+/* CARDS */
 .card{
     background:#1e293b;
-    border-radius:12px;
     padding:15px;
+    border-radius:12px;
     margin-bottom:10px;
-}
-
-.day{
     border-left:4px solid #f9a8d4;
 }
 
@@ -54,23 +64,41 @@ button{
     opacity:0.5;
 }
 
-input{
-    margin-top:5px;
+/* DASHBOARD */
+.dashboard{
+    background:#1e293b;
+    padding:15px;
+    border-radius:10px;
+    margin-bottom:20px;
 }
+
 </style>
 
 </head>
 
 <body>
 
-<div class="container">
+<div class="sidebar">
+    <h2>PCDF Elite</h2>
 
-<h1>Mentoria Elite PCDF</h1>
+    <div class="menu">
+        <button onclick="goWeek(0)">Semana 1</button>
+        <button onclick="goWeek(1)">Semana 2</button>
+        <button onclick="goWeek(2)">Semana 3</button>
+    </div>
+</div>
+
+<div class="main">
+
+<div class="dashboard">
+Progresso: <span id="progress">0</span>%<br>
+Desempenho médio: <span id="performance">0</span>%<br>
+</div>
 
 <div class="topbar">
-<button onclick="prevWeek()">⬅️ Semana</button>
-<div id="weekTitle">Semana 1</div>
-<button onclick="nextWeek()">Semana ➡️</button>
+<button onclick="prevWeek()">⬅️</button>
+<h2 id="weekTitle">Semana 1</h2>
+<button onclick="nextWeek()">➡️</button>
 </div>
 
 <div id="planner"></div>
@@ -79,114 +107,64 @@ input{
 
 <script>
 
+let data = JSON.parse(localStorage.getItem("pcdf")) || {
+    completed:0,
+    scores:[]
+};
+
+function save(){
+    localStorage.setItem("pcdf", JSON.stringify(data));
+}
+
+function avg(arr){
+    if(arr.length==0) return 0;
+    return Math.round(arr.reduce((a,b)=>a+b,0)/arr.length);
+}
+
+function update(){
+    document.getElementById("progress").innerText = Math.round((data.completed/90)*100);
+    document.getElementById("performance").innerText = avg(data.scores);
+    save();
+}
+
+function concluir(id, input){
+    let val = parseInt(input.value);
+
+    if(!val || val<0 || val>100){
+        alert("Digite % válida");
+        return;
+    }
+
+    let el = document.getElementById(id);
+
+    if(!el.classList.contains("done")){
+        el.classList.add("done");
+        data.completed++;
+        data.scores.push(val);
+    }
+
+    update();
+}
+
 let currentWeek = 0;
 
 let weeks = [
 
-/* ================= SEMANA 1 ================= */
-
+/* SEMANA 1 */
 [
-{
-dia:"Dia 1",
-conteudo:[
-"📚 Penal → Aplicação da lei penal (art. 1–12)",
-"📚 Português → Interpretação (inferência)",
-"⚖️ Lei seca → CP art. 1–12",
-"🧠 Questões → 30 penal + 30 português",
-"🔁 Revisão → iniciar ciclo"
-]
-},
-
-{
-dia:"Dia 2",
-conteudo:[
-"📚 Processo Penal → Inquérito (art. 4–23)",
-"📚 Informática → Segurança básica",
-"⚖️ Lei seca → CPP art. 4–10",
-"🧠 Questões → 60 questões",
-"🔁 Revisão → Dia 1"
-]
-},
-
-{
-dia:"Dia 3",
-conteudo:[
-"📚 Penal → Tipicidade (art. 13–18)",
-"📚 Português → Coesão e coerência",
-"⚖️ Lei seca → CP art. 13–18",
-"🧠 Questões → 30 penal + 30 português",
-"🔁 Revisão → Dia 2"
-]
-},
-
-{
-dia:"Dia 4",
-conteudo:[
-"📚 Constitucional → Direitos fundamentais",
-"📚 RLM → proposições",
-"⚖️ Lei seca → CF art. 5",
-"🧠 Questões → 60",
-"🔁 Revisão → Dia 3"
-]
-},
-
-{
-dia:"Dia 5",
-conteudo:[
-"📚 Penal → Ilicitude",
-"📚 Processo Penal → Provas",
-"⚖️ Lei seca → CPP art. 155–157",
-"🧠 Questões → 60",
-"🔁 Revisão → Dia 4"
-]
-},
-
-{
-dia:"Dia 6",
-conteudo:[
-"📚 Estatística → média",
-"📚 Contabilidade → patrimônio",
-"⚖️ Lei seca → revisão geral",
-"🧠 Questões → 40",
-"🔁 Revisão → semana"
-]
-},
-
-{
-dia:"Dia 7",
-conteudo:[
-"🧠 Simulado 80 questões",
-"🔁 Revisão completa",
-"📊 Análise de desempenho"
-]
-}
+["Penal → art. 1–12","Português → interpretação","Lei seca CP","60 questões"],
+["Processo → inquérito","Informática","Lei seca CPP","60 questões"],
+["Penal → tipicidade","Português → coesão","Lei seca","60 questões"],
+["Constitucional → art. 5","RLM","Lei seca","60 questões"],
+["Penal → ilicitude","Processo → provas","Lei seca","60 questões"],
+["Estatística","Contabilidade","Revisão","40 questões"],
+["Simulado","Revisão geral","Análise",""]
 ],
 
-/* ================= SEMANA 2 ================= */
-
+/* SEMANA 2 */
 [
-{
-dia:"Dia 8",
-conteudo:[
-"📚 Penal → Culpabilidade",
-"📚 Português → Concordância",
-"⚖️ Lei seca → CP art. 20–23",
-"🧠 Questões → 60",
-"🔁 Revisão → Dia 1"
-]
-},
-
-{
-dia:"Dia 9",
-conteudo:[
-"📚 Processo Penal → Prisões",
-"📚 Informática → redes",
-"⚖️ Lei seca → CPP art. 282–310",
-"🧠 Questões → 60",
-"🔁 Revisão → Dia 2"
-]
-}
-
+["Penal → culpabilidade","Português → concordância","Lei seca","60 questões"],
+["Processo → prisão","Informática","Lei seca","60 questões"]
 ]
 
 ];
@@ -199,22 +177,23 @@ function render(){
 
     weeks[currentWeek].forEach((d,i)=>{
         let div = document.createElement("div");
-        div.className="card day";
+        div.className="card";
+        div.id="d"+i;
 
-        let html = `<h3>${d.dia}</h3>`;
+        div.innerHTML = `
+        <h3>Dia ${i+1}</h3>
 
-        d.conteudo.forEach(c=>{
-            html += `<div>${c}</div>`;
-        });
+        <div class="study">${d[0]}</div>
+        <div class="study">${d[1]}</div>
+        <div class="review">${d[2]}</div>
+        <div>🧠 ${d[3]}</div>
 
-        html += `
         % acertos:<br>
-        <input type="number">
+        <input type="number" id="s${i}">
         <br>
-        <button onclick="this.parentElement.classList.add('done')">Concluir</button>
+        <button onclick="concluir('d${i}', s${i})">Concluir</button>
         `;
 
-        div.innerHTML = html;
         planner.appendChild(div);
     });
 }
@@ -231,6 +210,11 @@ function prevWeek(){
         currentWeek--;
         render();
     }
+}
+
+function goWeek(n){
+    currentWeek = n;
+    render();
 }
 
 render();
